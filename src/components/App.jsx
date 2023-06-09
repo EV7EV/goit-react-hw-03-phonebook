@@ -17,12 +17,28 @@ export class App extends Component {
     ],
     filter: '',
   };
+  componentDidMount() {
+    const storage = JSON.parse(localStorage.getItem('contacts'));
+    if (storage) {
+      this.setState({ contacts: [...storage] });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   addcontact = ({ name, number }) => {
     const { contacts } = this.state;
-    const arr = contacts.map(contact => contact.name);
-    if (arr.includes(name)) {
+    const isExist = contacts.find(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (isExist) {
       alert(`contact ${name} is already in contacts`);
+
       return;
     }
 
